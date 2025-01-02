@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: viewsonic-batch-service
+  profiles:
+    active: dev
+info:
+  version: '@project.version@'
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+mongeez:
+  location: mongo-changelog/changelog-master.xml
+
+---
+server:
+  port: 8080
+spring:
+  profiles: dev
+  data:
+    mongodb:
+      host: localhost
+      database: viewsonic-batch-service
+  datasource:
+    url: jdbc:mysql://localhost/viewsonic_batch_service?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=Round&allowPublicKeyRetrieval=true
+
+    driver-class-name: 'com.mysql.cj.jdbc.Driver'
+    username: 'root'
+    password: 'password'
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        type: trace
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      # Eureka server address
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+application:
+  max-parallel-jobs: 1
+  initial-interval-sleep: 10
+  chunk-size: 5000
+  max-retry-attempts: 1
+  output-file-path: /root/odf-transmutor/output-csv-dir
+  viewSonic-file-directory: /root/odf-transmutor/input-xml-dir
+
+#sonar token : 00ad064d26b28128247de78428d56bb18ebefe3f
